@@ -1,6 +1,50 @@
 ---
 title: "P8105 Homework 2"
-author: "Madison Goldrich mpg2166"
+author: "Madison Goldrich - mpg2166"
 output: github_document
 ---
+
+```{r}
+library(tidyverse)
+```
+
+
+## Problem 1
+
+First, clean the data in pols-month.csv
+
+```{r}
+pols_month_df =
+  read_csv("data/fivethirtyeight_datasets/pols-month.csv") |> 
+  separate(
+    mon,
+    sep = "-",
+    into = c("year", "month", "day")
+  ) |> 
+  mutate(
+    month = case_match(
+      month,
+      "01" ~ "Jan",
+      "02" ~ "Feb",
+      "03" ~ "Mar",
+      "04" ~ "Apr",
+      "05" ~ "May",
+      "06" ~ "Jun",
+      "07" ~ "Jul",
+      "08" ~ "Aug",
+      "09" ~ "Sep",
+      "10" ~ "Oct",
+      "11" ~ "Nov",
+      "12" ~ "Dec"
+    )
+  ) |> 
+  mutate(
+    president = case_match(
+      prez_gop,
+      0 ~ "dem",
+      1 ~ "gop"
+     )
+    ) |> 
+  select(-day, -prez_gop, -prez_dem)
+```
 
