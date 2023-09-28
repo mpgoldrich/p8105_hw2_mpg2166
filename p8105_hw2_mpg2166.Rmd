@@ -139,7 +139,35 @@ mr_trash_wheel_df =
   drop_na(dumpster) |> 
   mutate(
     homes_powered,
-    homes_powered = (weight_tons * 100) / 30
+    homes_powered = (weight_tons * 500) / 30
+  )
+```
+
+Import and clean Professor Trash Wheel and Gwynnda.
+
+```{r}
+prof_trash_wheel_df =
+  read_excel(
+    "data/202207 Trash Wheel Collection Data.xlsx",
+    sheet = "Professor Trash Wheel",
+    range = "A2:M96") |> 
+  janitor::clean_names() |> 
+  drop_na(dumpster) |> 
+  mutate(
+    homes_powered,
+    homes_powered = (weight_tons * 500) / 30
+  )
+
+gwynnda_trash_wheel_df =
+  read_excel(
+    "data/202207 Trash Wheel Collection Data.xlsx",
+    sheet = "Gwynnda Trash Wheel",
+    range = "A2:K108") |> 
+  janitor::clean_names() |> 
+  drop_na(dumpster) |> 
+  mutate(
+    homes_powered,
+    homes_powered = (weight_tons * 500) / 30
   )
 ```
 
