@@ -119,3 +119,27 @@ five_thirty_eight_df =
 ```
 
 The pols-month dataset initially contained 9 variables related to the number of national politicians (i.e., president, senators, representatives, etc.) who were democratic or republican at any given time. The snp dataset contained the closing values of the S&P stock index (`close`) on the associated date. Unemployment dataset contained the percentage of unemployment (`unemployment`) in the associated month/year. The resulting merged dataset is `r nrow(five_thirty_eight_df)` rows by `r ncol(five_thirty_eight_df)` columns. Years in which data was collected range from `r min(pull(five_thirty_eight_df, year))` to `r max(pull(five_thirty_eight_df, year))`.
+
+
+## Problem 2
+
+```{r}
+library(readxl)
+```
+
+Read and clean the Mr. Trash Wheel sheet.
+
+```{r}
+mr_trash_wheel_df =
+  read_excel(
+    "data/202207 Trash Wheel Collection Data.xlsx",
+    sheet = "Mr. Trash Wheel",
+    range = "A2:N549") |> 
+  janitor::clean_names() |> 
+  drop_na(dumpster) |> 
+  mutate(
+    homes_powered,
+    homes_powered = (weight_tons * 100) / 30
+  )
+```
+
