@@ -137,9 +137,22 @@ mr_trash_wheel_df =
     range = "A2:N549") |> 
   janitor::clean_names() |> 
   drop_na(dumpster) |> 
+  separate(
+    date,
+    sep = "-",
+    into = c("year_old", "month_old", "day")
+  ) |> 
+  select(
+    -year_old, -month_old
+  ) |> 
   mutate(
     homes_powered,
-    homes_powered = (weight_tons * 500) / 30
+    homes_powered = (weight_tons * 500) / 30,
+    trash_wheel = "Mr.",
+    year = as.numeric(year)
+  ) |> 
+  select(
+    trash_wheel, month, day, year, everything()
   )
 ```
 
@@ -153,9 +166,21 @@ prof_trash_wheel_df =
     range = "A2:M96") |> 
   janitor::clean_names() |> 
   drop_na(dumpster) |> 
+  separate(
+    date,
+    sep = "-",
+    into = c("year_old", "month_old", "day")
+  ) |> 
+  select(
+    -year_old, -month_old
+  ) |> 
   mutate(
     homes_powered,
-    homes_powered = (weight_tons * 500) / 30
+    homes_powered = (weight_tons * 500) / 30,
+    trash_wheel = "Professor"
+  ) |> 
+  select(
+    trash_wheel, month, day, year, everything()
   )
 
 gwynnda_trash_wheel_df =
@@ -165,9 +190,31 @@ gwynnda_trash_wheel_df =
     range = "A2:K108") |> 
   janitor::clean_names() |> 
   drop_na(dumpster) |> 
+  separate(
+    date,
+    sep = "-",
+    into = c("year_old", "month_old", "day")
+  ) |> 
+  select(
+    -year_old, -month_old
+  ) |> 
   mutate(
     homes_powered,
-    homes_powered = (weight_tons * 500) / 30
+    homes_powered = (weight_tons * 500) / 30,
+    trash_wheel = "Gwynnda"
+  ) |> 
+  select(
+    trash_wheel, month, day, year, everything()
   )
+```
+
+Combine all 3 trash wheel datasets.
+
+```{r}
+mr_prof_df =
+  full_join(mr_trash_wheel_df, prof_trash_wheel_df)
+
+trash_wheels_df =
+  full_join(mr_prof_df, gwynnda_trash_wheel_df)
 ```
 
