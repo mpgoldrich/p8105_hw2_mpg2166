@@ -218,3 +218,5 @@ trash_wheels_df =
   full_join(mr_prof_df, gwynnda_trash_wheel_df)
 ```
 
+
+Each of the individual trash wheel datasets (Mr., Professor, and Gwynnda) contained information about trash collected by these 3 trash wheels. The data was collected on the dates specified and measured things such as the weight of trash collected in tons `weight_tons`, an estimate of the number of homes powered calculated based on the weight of trash collected `homes_powered`, and the amount of specific trash items that were collected - i.e., `plastic_bottles` or `cigarette_butts`. Not all 3 trash wheels measured the exact same specific trash items. Each row in the dataset is an observation, so there are `r nrow(trash_wheels_df)` observations in the `trash_wheels_df` dataset. The total weight of trash collected by Professor Trash Wheel was `r sum(pull(prof_trash_wheel_df, weight_tons))` tons. Gwynnda collected `r sum(pull(filter(gwynnda_trash_wheel_df, month == "July" & year == "2021"), cigarette_butts))` cigarette butts in July 2021.
