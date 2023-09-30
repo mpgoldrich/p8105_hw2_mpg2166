@@ -274,3 +274,18 @@ bl_fem_non_df =
 ```
 
 `r nrow(bl_fem_carrier_df) / nrow(bl_fem_non_df) * 100` percent of women in the study are APOE4 carriers.
+
+
+Import, clean, and tidy the dataset of longitudinally observed biomarker values.
+
+```{r}
+mci_amyloid_df =
+  read_csv("data/mci_amyloid.csv", skip = 1) |> 
+  janitor::clean_names() |> 
+  select(
+    id = study_id,
+    everything()
+  )
+```
+
+I imported the dataset using a similar process as the baseline demographics one; I needed to include `skip = 1` in the `read_csv` argument for the same reason. I used `janitor::clean_names` again. Then I just used select to rename `study_id` to `id` so that it matches the first dataset. 
