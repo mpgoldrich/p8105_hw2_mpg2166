@@ -289,3 +289,16 @@ mci_amyloid_df =
 ```
 
 I imported the dataset using a similar process as the baseline demographics one; I needed to include `skip = 1` in the `read_csv` argument for the same reason. I used `janitor::clean_names` again. Then I just used select to rename `study_id` to `id` so that it matches the first dataset. 
+
+
+Check whether some participants appear in only the baseline or amyloid datasets:
+
+```{r}
+range(pull(mci_bl_df, id))
+range(pull(mci_amyloid_df, id))
+
+nrow(mci_bl_df)
+nrow(mci_amyloid_df)
+```
+
+Because the ranges of the Study IDs included in each dataset are different, we can tell that there are some participants who appear in one and not the other. The baseline dataset only goes up to Study ID 483, while the amyloid dataset goes up to Study ID 495, so `r 495 -483` participants were added after the baseline demographics were recorded. However, since the amyloid dataset is only `r nrow(mci_amyloid_df) - nrow(mci_bl_df)` participants larger than the baseline dataset, some of the participants must be in the baseline set and not amyloid.
