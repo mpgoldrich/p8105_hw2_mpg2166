@@ -15,7 +15,7 @@ First, clean the data in pols-month.csv
 
 ```{r}
 pols_month_df =
-  read_csv("data/fivethirtyeight_datasets/pols-month.csv") |> 
+  read_csv("data/pols-month.csv") |> 
   separate(
     mon,
     sep = "-",
@@ -52,7 +52,7 @@ Second, clean the data in snp.csv
 
 ```{r}
 snp_df =
-  read_csv("data/fivethirtyeight_datasets/snp.csv") |> 
+  read_csv("data/snp.csv") |> 
     separate(
     date,
     sep = "/",
@@ -96,7 +96,7 @@ Third, tidy the unemployment data so that it can be merged with the previous dat
 
 ```{r}
 unemployment_df =
-  read.csv("data/fivethirtyeight_datasets/unemployment.csv") |> 
+  read.csv("data/unemployment.csv") |> 
   pivot_longer(
     Jan:Dec,
     names_to = "month",
@@ -220,3 +220,57 @@ trash_wheels_df =
 
 
 Each of the individual trash wheel datasets (Mr., Professor, and Gwynnda) contained information about trash collected by these 3 trash wheels. The data was collected on the dates specified and measured things such as the weight of trash collected in tons `weight_tons`, an estimate of the number of homes powered calculated based on the weight of trash collected `homes_powered`, and the amount of specific trash items that were collected - i.e., `plastic_bottles` or `cigarette_butts`. Not all 3 trash wheels measured the exact same specific trash items. Each row in the dataset is an observation, so there are `r nrow(trash_wheels_df)` observations in the `trash_wheels_df` dataset. The total weight of trash collected by Professor Trash Wheel was `r sum(pull(prof_trash_wheel_df, weight_tons))` tons. Gwynnda collected `r sum(pull(filter(gwynnda_trash_wheel_df, month == "July" & year == "2021"), cigarette_butts))` cigarette butts in July 2021.
+
+
+## Problem 3
+
+Import, clean, and tidy the dataset of baseline demographics.
+
+```{r}
+mci_bl_df =
+  read_csv("data/MCI_baseline.csv", skip = 1) |> 
+  janitor::clean_names() |> 
+  mutate(
+    age_at_onset = replace(
+      age_at_onset, age_at_onset == ".", NA
+    ),
+    sex = case_match(
+      sex,
+      1 ~ "male",
+      0 ~ "female"
+    ),
+    apoe4 = case_match(
+      apoe4,
+      1 ~ "carrier",
+      0 ~ "non-carrier"
+    )
+  ) |> 
+  filter(
+    is.na(age_at_onset) |
+    (as.numeric(age_at_onset) - current_age) > 0
+  )
+```
+
+Discuss important steps in the import process and relevant features of the dataset:
+
+To import, I had to include `skip = 1` because the first row in the csv file included the variable definitions. I used `janitor::clean_names` to clean the variable names. I used `mutate` to replaces dots that indicated missing values in `age_at_onset` with NAs. I also used mutate to make `sex` and `apoe4` non-numeric. To remove participants who did not meet the inclusion criteria, I used `filter` to keep those who either never developed MCI (implying that they did not have MCI at baseline) or those whose onset age was greater than their current age at baseline. The final tidy `mci_bl_df` dataset is `r nrow(mci_bl_df)` rows by `r ncol(mci_bl_df)` columns. `r nrow(mci_bl_df)` participants were recruited. Of these participants, `r sum(!is.na(pull(mci_bl_df, age_at_onset)))` developed MCI. The average baseline age is `r mean(pull(mci_bl_df, current_age))` years.
+
+What proportion of women in the study are APOE4 carriers?
+
+```{r}
+bl_fem_carrier_df =
+  filter(
+    mci_bl_df,
+    sex == "female",
+    apoe4 == "carrier"
+  )
+
+bl_fem_non_df =
+  filter(
+    mci_bl_df,
+    sex == "female",
+    apoe4 == "non-carrier"
+  )
+```
+
+`r nrow(bl_fem_carrier_df) / nrow(bl_fem_non_df) * 100` percent of women in the study are APOE4 carriers.
