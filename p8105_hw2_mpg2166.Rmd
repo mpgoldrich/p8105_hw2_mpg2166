@@ -288,7 +288,7 @@ mci_amyloid_df =
   )
 ```
 
-I imported the dataset using a similar process as the baseline demographics one; I needed to include `skip = 1` in the `read_csv` argument for the same reason. I used `janitor::clean_names` again. Then I just used select to rename `study_id` to `id` so that it matches the first dataset. 
+I imported the dataset using a similar process as the baseline demographics one; I needed to include `skip = 1` in the `read_csv` argument for the same reason. I used `janitor::clean_names` again. Then I just used select to rename `study_id` to `id` so that it matches the first dataset. The variable measured was "time (in years) elapsed since the study baseline to the visit where biomarker amyloid β 42/40 ratio was measured" for each participant.  
 
 
 Check whether some participants appear in only the baseline or amyloid datasets:
@@ -302,3 +302,21 @@ nrow(mci_amyloid_df)
 ```
 
 Because the ranges of the Study IDs included in each dataset are different, we can tell that there are some participants who appear in one and not the other. The baseline dataset only goes up to Study ID 483, while the amyloid dataset goes up to Study ID 495, so `r 495 -483` participants were added after the baseline demographics were recorded. However, since the amyloid dataset is only `r nrow(mci_amyloid_df) - nrow(mci_bl_df)` participants larger than the baseline dataset, some of the participants must be in the baseline set and not amyloid.
+
+
+Combine the demographic and biomarker datasets so that only participants who appear in both datasets are retained:
+
+```{r}
+mci_df =
+  inner_join(mci_bl_df, mci_amyloid_df)
+```
+
+The resulting dataset contains `r nrow(mci_df)` participants who had their baseline demographics measured and continued to participate in the study throughout the follow-up period.
+
+
+Export the result as a CSV to your data directory:
+
+```{r}
+write_csv(mci_df, "data/mci.csv")
+```
+
