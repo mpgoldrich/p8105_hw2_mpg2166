@@ -132,9 +132,9 @@ Read and clean the Mr. Trash Wheel sheet.
 ```{r}
 mr_trash_wheel_df =
   read_excel(
-    "data/202207 Trash Wheel Collection Data.xlsx",
+    "data/202309 Trash Wheel Collection Data.xlsx",
     sheet = "Mr. Trash Wheel",
-    range = "A2:N549") |> 
+    range = "A2:N586") |> 
   janitor::clean_names() |> 
   drop_na(dumpster) |> 
   separate(
@@ -161,9 +161,9 @@ Import and clean Professor Trash Wheel and Gwynnda.
 ```{r}
 prof_trash_wheel_df =
   read_excel(
-    "data/202207 Trash Wheel Collection Data.xlsx",
+    "data/202309 Trash Wheel Collection Data.xlsx",
     sheet = "Professor Trash Wheel",
-    range = "A2:M96") |> 
+    range = "A2:M108") |> 
   janitor::clean_names() |> 
   drop_na(dumpster) |> 
   separate(
@@ -185,9 +185,9 @@ prof_trash_wheel_df =
 
 gwynnda_trash_wheel_df =
   read_excel(
-    "data/202207 Trash Wheel Collection Data.xlsx",
+    "data/202309 Trash Wheel Collection Data.xlsx",
     sheet = "Gwynnda Trash Wheel",
-    range = "A2:K108") |> 
+    range = "A2:L157") |> 
   janitor::clean_names() |> 
   drop_na(dumpster) |> 
   separate(
@@ -253,7 +253,7 @@ mci_bl_df =
 
 Discuss important steps in the import process and relevant features of the dataset:
 
-To import, I had to include `skip = 1` because the first row in the csv file included the variable definitions. I used `janitor::clean_names` to clean the variable names. I used `mutate` to replaces dots that indicated missing values in `age_at_onset` with NAs. I also used mutate to make `sex` and `apoe4` non-numeric. To remove participants who did not meet the inclusion criteria, I used `filter` to keep those who either never developed MCI (implying that they did not have MCI at baseline) or those whose onset age was greater than their current age at baseline. The final tidy `mci_bl_df` dataset is `r nrow(mci_bl_df)` rows by `r ncol(mci_bl_df)` columns. `r nrow(mci_bl_df)` participants were recruited. Of these participants, `r sum(!is.na(pull(mci_bl_df, age_at_onset)))` developed MCI. The average baseline age is `r mean(pull(mci_bl_df, current_age))` years.
+To import, I had to include `skip = 1` because the first row in the csv file included the variable definitions. I used `janitor::clean_names` to clean the variable names. I used `mutate` to replaces dots that indicated missing values in `age_at_onset` with NAs. I also used `mutate` to make `sex` and `apoe4` non-numeric. To remove participants who did not meet the inclusion criteria, I used `filter` to keep those who either never developed MCI (implying that they did not have MCI at baseline) or those whose onset age was greater than their current age at baseline. The final tidy `mci_bl_df` dataset is `r nrow(mci_bl_df)` rows by `r ncol(mci_bl_df)` columns. `r nrow(mci_bl_df)` participants were recruited. Of these participants, `r sum(!is.na(pull(mci_bl_df, age_at_onset)))` developed MCI. The average baseline age is `r mean(pull(mci_bl_df, current_age))` years.
 
 What proportion of women in the study are APOE4 carriers?
 
@@ -288,7 +288,7 @@ mci_amyloid_df =
   )
 ```
 
-I imported the dataset using a similar process as the baseline demographics one; I needed to include `skip = 1` in the `read_csv` argument for the same reason. I used `janitor::clean_names` again. Then I just used select to rename `study_id` to `id` so that it matches the first dataset. The variable measured was "time (in years) elapsed since the study baseline to the visit where biomarker amyloid β 42/40 ratio was measured" for each participant.  
+I imported the dataset using a similar process as the baseline demographics one; I needed to include `skip = 1` in the `read_csv` argument for the same reason. I used `janitor::clean_names` again. Then I just used `select` to rename `study_id` to `id` so that it matches the first dataset. The variable measured was "time (in years) elapsed since the study baseline to the visit where biomarker amyloid β 42/40 ratio was measured" for each participant.  
 
 
 Check whether some participants appear in only the baseline or amyloid datasets:
